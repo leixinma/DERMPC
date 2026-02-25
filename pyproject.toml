@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "der_mpc"
+version = "0.1.0"
+description = "Discrete Elastic Rods + acados NMPC framework"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy",
+    "matplotlib>=3.7",
+    "pyyaml",
+    "casadi",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
+
+[tool.setuptools.packages.find]
+include = ["der_mpc*"]

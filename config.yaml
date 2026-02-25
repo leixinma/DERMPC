@@ -1,0 +1,64 @@
+# Rod (2D cantilever beam, Discrete Elastic Rods)
+rod:
+  n_nodes: 11
+  n_fixed: 2               # nodes 0..n_fixed-1 are clamped
+  length: 1.0              # [m]
+  EI: 10.0                 # bending stiffness [N*m^2]
+  EA: 100.0                # axial stiffness [N] (penalty in MPC; PBD enforces inextensibility in sim)
+  linear_density: 0.5      # [kg/m]
+  damping: 0.1             # structural damping [N*s/m]
+  gravity: [0.0, -9.81]    # [m/s^2]
+
+# Control inputs
+control:
+  inputs:
+    - {type: force,  node: 2, direction: [0, 1], bounds: [-20, 20]}
+    - {type: moment, node: 2, bounds: [-5, 5]}
+
+# Disturbance (simulation only, not in MPC model)
+disturbance:
+  node: 10                 # tip node
+  direction: [0, 1]
+  type: sinusoidal
+  amplitude: 1.0           # [N]
+  frequency: 2.0           # [Hz]
+
+# Simulation
+sim:
+  dt: 0.0005               # [s]
+  duration: 5.0            # [s]
+  pbd_iter: 10
+  settle_steps: 3000
+  obs_noise_std: 0.0
+
+# MPC
+mpc:
+  dt: 0.01                 # control period [s]
+  N: 30                    # prediction horizon
+
+  cost:
+    type: vibration_suppression
+    observed_nodes: all
+    w_pos: 20.0
+    w_vel: 100.0
+    w_ctrl: 1.0
+    w_pos_terminal: 50.0
+    w_vel_terminal: 200.0
+
+  solver:
+    nlp_solver_type: SQP_RTI
+    integrator_type: IRK
+    qp_solver: PARTIAL_CONDENSING_HPIPM
+    sim_method_num_stages: 2
+    sim_method_num_steps: 3
+    sim_method_newton_iter: 5
+    nlp_solver_max_iter: 1
+    qp_solver_iter_max: 100
+    hessian_approx: GAUSS_NEWTON
+    levenberg_marquardt: 1.0e-2
+    qp_solver_warm_start: 2
+
+# Visualization
+viz:
+  enabled: true
+  update_every: 50

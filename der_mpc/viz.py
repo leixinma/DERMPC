@@ -161,7 +161,7 @@ _COLOR_MPC = "#1f77b4"  # blue
 def plot_summary(hist_ol: Dict[str, np.ndarray],
                  hist_cl: Dict[str, np.ndarray],
                  save_dir: str = "results"):
-    """Save publication-quality comparison plots after simulation."""
+    """Save a combined 3-panel summary plot after simulation."""
     matplotlib.use("Agg")
     d = pathlib.Path(save_dir)
     d.mkdir(parents=True, exist_ok=True)
@@ -170,51 +170,6 @@ def plot_summary(hist_ol: Dict[str, np.ndarray],
     t_cl = hist_cl["t"]
 
     with plt.rc_context(_RC):
-        # Kinetic energy comparison
-        fig, ax = plt.subplots(figsize=(8, 3.2))
-        ax.semilogy(t_ol, np.array(hist_ol["ke"]) + 1e-14,
-                    color=_COLOR_OL, lw=1.4, label="Open-loop")
-        ax.semilogy(t_cl, np.array(hist_cl["ke"]) + 1e-14,
-                    color=_COLOR_MPC, lw=1.4, label="MPC")
-        ax.set_xlabel("Time (s)")
-        ax.set_ylabel("Kinetic Energy (J)")
-        ax.legend(frameon=True, fancybox=False, edgecolor="0.7")
-        ax.grid(True, which="both", ls="--", alpha=0.35)
-        fig.tight_layout()
-        fig.savefig(d / "ke_comparison.png")
-        plt.close(fig)
-
-        # Tip y-displacement comparison
-        fig, ax = plt.subplots(figsize=(8, 3.2))
-        ax.plot(t_ol, hist_ol["tip_y"], color=_COLOR_OL, lw=1.2, label="Open-loop")
-        ax.plot(t_cl, hist_cl["tip_y"], color=_COLOR_MPC, lw=1.2, label="MPC")
-        ax.set_xlabel("Time (s)")
-        ax.set_ylabel("Tip y-displacement (m)")
-        ax.legend(frameon=True, fancybox=False, edgecolor="0.7")
-        ax.grid(True, ls="--", alpha=0.35)
-        fig.tight_layout()
-        fig.savefig(d / "tip_y_comparison.png")
-        plt.close(fig)
-
-        # Control inputs
-        if "u" in hist_cl and len(hist_cl["u"]) > 0:
-            u_arr = np.array(hist_cl["u"])
-            fig, ax = plt.subplots(figsize=(8, 3.2))
-            labels = ["Force (N)", "Moment (N·m)"]
-            colors = ["#1f77b4", "#ff7f0e"]
-            for j in range(u_arr.shape[1]):
-                lbl = labels[j] if j < len(labels) else f"u[{j}]"
-                ax.plot(t_cl, u_arr[:, j], lw=1.2,
-                        color=colors[j % len(colors)], label=lbl)
-            ax.set_xlabel("Time (s)")
-            ax.set_ylabel("Control Input")
-            ax.legend(frameon=True, fancybox=False, edgecolor="0.7")
-            ax.grid(True, ls="--", alpha=0.35)
-            fig.tight_layout()
-            fig.savefig(d / "control.png")
-            plt.close(fig)
-
-        # Combined 3-panel summary for README
         fig, axes = plt.subplots(1, 3, figsize=(16, 3.5))
 
         ax = axes[0]
@@ -256,4 +211,4 @@ def plot_summary(hist_ol: Dict[str, np.ndarray],
         fig.savefig(d / "summary.png")
         plt.close(fig)
 
-    print(f"Plots saved to {d}/")
+    print(f"Summary plot saved to {d}/summary.png")

@@ -19,29 +19,14 @@ The simulation compares an **open-loop** response (no control) against a **close
 
 Under a 1 N sinusoidal disturbance (2 Hz) applied at the beam tip, the NMPC controller achieves **67.9% kinetic energy reduction** and reduces the RMS tip deviation by approximately 50%, with all 500 MPC solves converging successfully.
 
-![Summary](results/summary.png)
+![Beam Control Animation](results/beam_control.gif)
 
 | Metric | Open-loop | MPC |
 |---|---|---|
 | Mean kinetic energy | 2.17e-02 J | 6.97e-03 J |
 | RMS tip deviation | 4.55e-02 m | 2.28e-02 m |
 
-<details>
-<summary>Individual plots</summary>
-
-**Kinetic energy comparison (log scale)**
-
-![KE comparison](results/ke_comparison.png)
-
-**Tip y-displacement**
-
-![Tip displacement](results/tip_y_comparison.png)
-
-**Control inputs**
-
-![Control](results/control.png)
-
-</details>
+![Summary](results/summary.png)
 
 ## Installation
 
